@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { HttpService } from "../../shared/services/http-service";
 
 @Component({
   selector: "app-kitchen-dashboard",
@@ -6,11 +7,12 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./kitchen-dashboard.component.css"]
 })
 export class KitchenDashboardComponent implements OnInit {
+
   headerList: any[] = [];
   dataList: any[] = [];
   actionList: any[] = [];
 
-  constructor() {}
+  constructor(private httpService: HttpService) {}
 
   ngOnInit() {
     this.setGridProperty();
@@ -18,27 +20,27 @@ export class KitchenDashboardComponent implements OnInit {
 
   setGridProperty() {
     this.headerList = [
-      { header: "Name", mapTo: "dishName" },
-      { header: "Quantity", mapTo: "dishQty" },
-      { header: "Created-till-now", mapTo: "dishCTN" },
-      { header: "Predicted", mapTo: "dishPrediction" },
+      { header: "Name", mapTo: "dishname" },
+      { header: "Quantity", mapTo: "qty" },
+      { header: "Created-till-now", mapTo: "createdtillnow" },
+      { header: "Predicted", mapTo: "predictedqty" },
       { header: "Status" }
     ];
 
-    this.dataList = [
-      {
-        dishName: "Jumbo Chicken Wrap",
-        dishQty: "1",
-        dishCTN: "14",
-        dishPrediction: "123"
-      },
-      {
-        dishName: "Vegetarian Lasagne",
-        dishQty: "2",
-        dishCTN: "23",
-        dishPrediction: "456"
-      }
-    ];
+    // this.dataList = [
+    //   {
+    //     dishName: "Jumbo Chicken Wrap",
+    //     dishQty: "1",
+    //     dishCTN: "14",
+    //     dishPrediction: "123"
+    //   },
+    //   {
+    //     dishName: "Vegetarian Lasagne",
+    //     dishQty: "2",
+    //     dishCTN: "23",
+    //     dishPrediction: "456"
+    //   }
+    // ];
 
     this.actionList = [
       {

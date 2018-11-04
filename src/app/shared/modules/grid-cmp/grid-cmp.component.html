@@ -1,36 +1,37 @@
 <div class="card" style="height: 70%; margin:10px">
   <div class="card-header">
     <h5>Dish</h5>
+    <button (click)="onDownloadReportClick()">Download Report</button>
   </div>
   <div class="card-body" style="overflow-y: scroll; height:100%; padding:2px">
     <table class="table table-striped">
       <thead class="thead-inverse">
         <td *ngFor="let head of headerList" style="font-weight: 700">{{head.header}}</td>
-        <!-- <td style="font-weight: 700">Location</td>
-        <td style="font-weight: 700">Description</td>
-        <td style="font-weight: 700">Duration</td>
-        <td style="font-weight: 700">Fees</td>
-        <td style="font-weight: 700">Max attendees</td>
-        <td style="font-weight: 700">Remaining seats</td>
-        <td style="font-weight: 700">Actions</td> -->
       </thead>
-      <tbody *ngIf="!noEvents">
+      <tbody *ngIf="dataList.length">
         <tr *ngFor="let data of dataList">
-          <td *ngFor="let header of headerList"> {{data[header.mapTo]}}</td>
-          <!-- <td> {{event?.eventDetail?.eventLocation}}</td>
-          <td> {{event?.eventDetail?.eventDescription}}</td>
-          <td> {{event?.eventDetail?.eventDuration}}</td>
-          <td> {{event?.eventDetail?.eventFees}}</td>
-          <td> {{event?.eventDetail?.eventParicipantNum}}</td>
-          <td> {{event?.eventDetail?.remainingSeats}}</td> -->
+          <td *ngFor="let head of headerList">
+            <span *ngIf="head.header!=='Status'">
+              {{data[head.mapTo]}}
+            </span>
+            <span *ngIf="head.header==='Status'">
+              <span *ngFor="let act of actionList">
+                <button type="button" *ngIf="data['status'] !== 'true' && data['status'] !== true">
+                  <i class="{{act.icon}}" aria-hidden="true" (click)="processActions(act.action, data)"> Done</i>
+                </button>
+                <span *ngIf="data['status'] === 'true'">
+                  <i class="fa fa-check" aria-hidden="true"> Completed</i>
+                </span>
+              </span>
+            </span>
+          </td>
+        </tr>
+      </tbody>
+      <tbody *ngIf="dataList.length === 0">
+        <tr>
           <td>
-            <span *ngFor="let act of actionList">
-              <button type="button">
-                <i class="{{act.icon}}" aria-hidden="true" (click)="processActions(act.emit, event)"> Done</i>
-              </button>
-              <!-- <button *ngIf="act.action !== 'Register' && event.user === currentUserName" type="button">
-                <i class="{{act.icon}}" aria-hidden="true" (click)="processActions(act.emit, event)"></i>
-              </button> -->
+            <span>
+              No records to show.
             </span>
           </td>
         </tr>
