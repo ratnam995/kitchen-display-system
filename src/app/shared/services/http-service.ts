@@ -7,7 +7,7 @@ import { Observable } from "rxjs/Rx";
 // @DuplicateRequestsFilter()
 //TODO Use authenticated http service instead of normal http
 
-const API_HOST = "http://localhost:3030";
+const API_HOST = "http://13.232.62.50:3030";
 @Injectable()
 export class HttpService {
   service: any = {};
@@ -58,16 +58,16 @@ export class HttpService {
 
   store(url: string, element: any, timeOut: boolean = false): Observable<any> {
     console.log("http store : element -->", element);
-    let header={};
-    if(url.includes('download')){
-      header= {responseType: ResponseContentType.Blob}
+    let header = {};
+    if (url.includes("download")) {
+      header = { responseType: ResponseContentType.Blob };
     }
     return this.http
       .post(`${API_HOST}/${url}/`, element, header)
       .map((response: Response) => {
         console.log("response", response);
-        if(url.includes('download')){
-          return response['_body'];
+        if (url.includes("download")) {
+          return response["_body"];
         }
         return response.json();
       })
@@ -104,10 +104,7 @@ export class HttpService {
   }
 
   patch(url: string, elementID: string, updatedElement: any): Observable<any> {
-    return this.http.patch(
-      `${API_HOST}/${url}/` + elementID,
-      updatedElement
-    );
+    return this.http.patch(`${API_HOST}/${url}/` + elementID, updatedElement);
   }
 
   handleErrorResponse(error: any): Observable<any> {
@@ -123,8 +120,8 @@ export class HttpService {
           errorMessage = "Request Timeout";
           errorName = "Error";
         } else {
-        //   errorMessage = MESSAGES["ConnectionError"].message;
-        //   errorName = MESSAGES["ConnectionError"].name;
+          //   errorMessage = MESSAGES["ConnectionError"].message;
+          //   errorName = MESSAGES["ConnectionError"].name;
         }
         this.router.navigate(["dashboard/home"]);
       } else {
@@ -217,8 +214,8 @@ export class HttpService {
           errorObject.message &&
           errorObject.message.includes("Cast to ObjectId failed")
         ) {
-        //   errorMessage = MESSAGES["noRecord"].message;
-        //   errorName = MESSAGES["noRecord"].name;
+          //   errorMessage = MESSAGES["noRecord"].message;
+          //   errorName = MESSAGES["noRecord"].name;
         }
 
         if (
@@ -243,8 +240,8 @@ export class HttpService {
               errorObject.hasOwnProperty("errors") &&
               Object.keys(errorObject.errors).length > 0
             ) {
-            //   errorMessage = MESSAGES["invalidData"].message;
-            //   errorName = MESSAGES["invalidData"].name;
+              //   errorMessage = MESSAGES["invalidData"].message;
+              //   errorName = MESSAGES["invalidData"].name;
             } else {
               return Observable.throw(errorObject);
             }
@@ -261,17 +258,17 @@ export class HttpService {
         }
       }
 
-    //   this.notificationService.error(
-    //     errorMessage ? errorMessage : errorObject.message,
-    //     errorName ? errorName : errorObject.name
-    //   );
+      //   this.notificationService.error(
+      //     errorMessage ? errorMessage : errorObject.message,
+      //     errorName ? errorName : errorObject.name
+      //   );
       return Observable.throw(errorObject);
     } catch (err) {
       console.log("Ye aya hai catch me", err);
-    //   this.notificationService.error(
-    //     MESSAGES["general"].message,
-    //     MESSAGES["general"].name
-    //   );
+      //   this.notificationService.error(
+      //     MESSAGES["general"].message,
+      //     MESSAGES["general"].name
+      //   );
       return Observable.throw({});
     }
   }
