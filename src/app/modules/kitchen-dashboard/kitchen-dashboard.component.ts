@@ -27,27 +27,12 @@ export class KitchenDashboardComponent implements OnInit {
       { header: "Status" }
     ];
 
-    // this.dataList = [
-    //   {
-    //     dishName: "Jumbo Chicken Wrap",
-    //     dishQty: "1",
-    //     dishCTN: "14",
-    //     dishPrediction: "123"
-    //   },
-    //   {
-    //     dishName: "Vegetarian Lasagne",
-    //     dishQty: "2",
-    //     dishCTN: "23",
-    //     dishPrediction: "456"
-    //   }
-    // ];
-
     this.actionList = [
       {
         type: "done",
         visible: true,
         text: "Done",
-        icon: "fa fa-eye",
+        icon: "fa fa-check",
         action: "emit"
       }
     ];

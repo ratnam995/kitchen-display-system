@@ -1,26 +1,32 @@
 <div class="card" style="height: 70%; margin:10px">
   <div class="card-header">
-    <h5>Dish</h5>
-    <button (click)="onDownloadReportClick()">Download Report</button>
+    <div class="row">
+      <div class="col-sm-10">
+        <h5>ORDER LIST</h5>
+      </div>
+      <div class="col-sm-2">
+        <button class="btn btn-sm btn-primary" (click)="onDownloadReportClick()"><i class="fa fa-download" aria-hidden="true"></i> Download Report</button>
+      </div>
+    </div>
   </div>
-  <div class="card-body" style="overflow-y: scroll; height:100%; padding:2px">
-    <table class="table table-striped">
+  <div class="card-body" style="padding:2px">
+    <table class="table table-striped table-fixed">
       <thead class="thead-inverse">
         <td *ngFor="let head of headerList" style="font-weight: 700">{{head.header}}</td>
       </thead>
       <tbody *ngIf="dataList.length">
         <tr *ngFor="let data of dataList">
-          <td *ngFor="let head of headerList">
+          <td *ngFor="let head of headerList" class="col-xs-3">
             <span *ngIf="head.header!=='Status'">
               {{data[head.mapTo]}}
             </span>
             <span *ngIf="head.header==='Status'">
               <span *ngFor="let act of actionList">
-                <button type="button" *ngIf="data['status'] !== 'true' && data['status'] !== true">
-                  <i class="{{act.icon}}" aria-hidden="true" (click)="processActions(act.action, data)"> Done</i>
+                <button type="button" class="btn btn-sm btn-primary" *ngIf="data['status'] !== 'true' && data['status'] !== true" (click)="processActions(act.action, data)">
+                  <i class="{{act.icon}}" aria-hidden="true"> Done</i>
                 </button>
-                <span *ngIf="data['status'] === 'true'">
-                  <i class="fa fa-check" aria-hidden="true"> Completed</i>
+                <span *ngIf="data['status'] === 'true'" style="color: green">
+                    <i class="fa fa-check-circle-o" aria-hidden="true"> Completed</i>
                 </span>
               </span>
             </span>

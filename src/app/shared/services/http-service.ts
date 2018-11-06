@@ -5,8 +5,6 @@ import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
 import { Observable } from "rxjs/Rx";
 import { NotificationService } from "./notification-service";
-// @DuplicateRequestsFilter()
-//TODO Use authenticated http service instead of normal http
 
 // const API_HOST = "http://13.232.62.50:3030";
 const API_HOST = "http://localhost:3030";
@@ -35,7 +33,7 @@ export class HttpService {
   }
 
   get(url: string, elementID: any, headers: any = null): Observable<any> {
-    console.log("Inside http service", url, elementID, headers);
+    // console.log("Inside http service", url, elementID, headers);
     return this.http
       .get(`${API_HOST}/${url}/` + elementID)
       .map((response: Response) => {
@@ -45,7 +43,7 @@ export class HttpService {
 
   getAll(url: string, params: any, noGrid: boolean = false): Observable<any> {
     let query = "";
-    console.log("params in http service", JSON.parse(JSON.stringify(params)));
+    // console.log("params in http service", JSON.parse(JSON.stringify(params)));
     query = this.buildUrl(params);
 
     console.log("query--->", query);
@@ -55,15 +53,14 @@ export class HttpService {
         return response.json();
       })
       .catch(err => {
-        console.log(err);
+        // console.log(err);
         // console.log(err.json());
         return this.handleErrorResponse(err);
-        // return Observable.throw(err.json());
       });
   }
 
   store(url: string, element: any, timeOut: boolean = false): Observable<any> {
-    console.log("http store : element -->", element);
+    // console.log("http store : element -->", element);
     let header = {};
     if (url.includes("download")) {
       header = { responseType: ResponseContentType.Blob };
@@ -71,16 +68,14 @@ export class HttpService {
     return this.http
       .post(`${API_HOST}/${url}/`, element, header)
       .map((response: Response) => {
-        console.log("response", response);
         if (url.includes("download")) {
           return response["_body"];
         }
         return response.json();
       })
       .catch(err => {
-        console.log("Inside http store error", JSON.parse(JSON.stringify(err)));
+        // console.log("Inside http store error", JSON.parse(JSON.stringify(err)));
         return this.handleErrorResponse(err);
-        // return Observable.throw(err.json());
       });
   }
 
@@ -92,7 +87,6 @@ export class HttpService {
       })
       .catch(err => {
         return this.handleErrorResponse(err);
-        // return Observable.throw(err.json());
       });
   }
 
@@ -103,9 +97,8 @@ export class HttpService {
         return response.json();
       })
       .catch(err => {
-        console.log("Erre ye aya hai backend se", err);
+        // console.log("Err ye aya hai backend se", err);
         return this.handleErrorResponse(err);
-        // return Observable.throw(err.json());
       });
   }
 
@@ -118,15 +111,12 @@ export class HttpService {
     let errorMessage = "";
     let errorName = "";
     try {
-      console.log("ye hai error", error);
       const errorObject = error.json();
-      console.log("ye hai error object", JSON.parse(JSON.stringify(error)));
       if (
         JSON.parse(JSON.stringify(error)).hasOwnProperty("type") &&
         !JSON.parse(JSON.stringify(error))["ok"] &&
         JSON.parse(JSON.stringify(error))["status"] === 0
       ) {
-        console.log("ye hai error object 2", errorObject);
         this.notificationService.error("Something went wrong", "Error");
       } else {
         this.notificationService.error(
@@ -136,7 +126,7 @@ export class HttpService {
       }
       return Observable.throw(errorObject);
     } catch (err) {
-      console.log("Ye aya hai catch me", err);
+      console.log("err in catch", err);
       this.notificationService.error("General error", "Error");
       return Observable.throw({});
     }

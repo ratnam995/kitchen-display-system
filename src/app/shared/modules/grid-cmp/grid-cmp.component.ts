@@ -60,12 +60,14 @@ export class GridCmpComponent implements OnInit {
   }
 
   processActions(act, orderData) {
-    console.log("act", act);
-    console.log("orderData", orderData);
     this.httpService.store("completeOrder", orderData).subscribe(
       orderCompleteRes => {
         console.log("orderCompleteRes", orderCompleteRes);
-        if(orderCompleteRes && orderCompleteRes.hasOwnProperty('success') && !orderCompleteRes.success){
+        if (
+          orderCompleteRes &&
+          orderCompleteRes.hasOwnProperty("success") &&
+          !orderCompleteRes.success
+        ) {
           this.notificationService.error("Unable to complete action", "Error");
         }
         // this.fetchCompleteOrderList();

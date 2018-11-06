@@ -16,8 +16,7 @@ export class AppComponent {
     viewContainerRef: ViewContainerRef,
     private toastr: ToastsManager,
     private router: Router
-  ) // , private translate: TranslateService
-  {
+  ) {
     this.toastr.setRootViewContainerRef(viewContainerRef);
     this.viewContainerRef = viewContainerRef;
   }
