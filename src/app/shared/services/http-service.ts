@@ -6,8 +6,8 @@ import "rxjs/add/operator/catch";
 import { Observable } from "rxjs/Rx";
 import { NotificationService } from "./notification-service";
 
-// const API_HOST = "http://13.232.62.50:3030";
-const API_HOST = "http://localhost:3030";
+const API_HOST = "http://13.232.62.50:3030";
+// const API_HOST = "http://localhost:3030";
 @Injectable()
 export class HttpService {
   service: any = {};

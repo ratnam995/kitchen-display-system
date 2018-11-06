@@ -11,8 +11,8 @@ import { IfObservable } from "rxjs/observable/IfObservable";
   styleUrls: ["./grid-cmp.component.css"]
 })
 export class GridCmpComponent implements OnInit {
-  // private url = "http://13.232.62.50:3030";
-  private url = "http://localhost:3030";
+  private url = "http://13.232.62.50:3030";
+  // private url = "http://localhost:3030";
   private socket;
 
   @Input()
