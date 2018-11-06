@@ -4,17 +4,23 @@ import { Router } from "@angular/router";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
 import { Observable } from "rxjs/Rx";
+import { NotificationService } from "./notification-service";
 // @DuplicateRequestsFilter()
 //TODO Use authenticated http service instead of normal http
 
-const API_HOST = "http://13.232.62.50:3030";
+// const API_HOST = "http://13.232.62.50:3030";
+const API_HOST = "http://localhost:3030";
 @Injectable()
 export class HttpService {
   service: any = {};
   authHttp: any = {};
   authenticatedAPI: boolean = true; //checks for authenticated http request (authHttp) or non-authenticated http request (http)
 
-  constructor(protected http: Http, private router: Router) {}
+  constructor(
+    protected http: Http,
+    protected notificationService: NotificationService,
+    private router: Router
+  ) {}
 
   buildUrl(parameters): string {
     let qs = "";
@@ -114,161 +120,24 @@ export class HttpService {
     try {
       console.log("ye hai error", error);
       const errorObject = error.json();
-      console.log("ye hai error object", errorObject);
-      if (errorObject.type && errorObject.type === "error") {
-        if (errorObject.code === 504 || errorObject.code === "504") {
-          errorMessage = "Request Timeout";
-          errorName = "Error";
-        } else {
-          //   errorMessage = MESSAGES["ConnectionError"].message;
-          //   errorName = MESSAGES["ConnectionError"].name;
-        }
-        this.router.navigate(["dashboard/home"]);
+      console.log("ye hai error object", JSON.parse(JSON.stringify(error)));
+      if (
+        JSON.parse(JSON.stringify(error)).hasOwnProperty("type") &&
+        !JSON.parse(JSON.stringify(error))["ok"] &&
+        JSON.parse(JSON.stringify(error))["status"] === 0
+      ) {
+        console.log("ye hai error object 2", errorObject);
+        this.notificationService.error("Something went wrong", "Error");
       } else {
-        if (errorObject && errorObject.code === 409) {
-          if (
-            errorObject.hasOwnProperty("errors") &&
-            errorObject.errors.hasOwnProperty("xMainLaneNum")
-          ) {
-            errorMessage = errorObject.errors.xMainLaneNum;
-            errorName = "Conflict";
-          } else if (
-            errorObject.hasOwnProperty("errors") &&
-            errorObject.errors.hasOwnProperty("xShortCode")
-          ) {
-            errorMessage = errorObject.errors.xShortCode;
-            errorName = "Conflict";
-          } else if (
-            errorObject.hasOwnProperty("errors") &&
-            errorObject.errors.hasOwnProperty("xStructNum")
-          ) {
-            // errorMessage= errorObject.errors.xStructNum;
-            // errorName = 'Conflict';
-            return Observable.throw(errorObject);
-          } else if (
-            errorObject.hasOwnProperty("errors") &&
-            errorObject.errors.hasOwnProperty("xStoreNum")
-          ) {
-            // errorMessage= errorObject.errors.xStructNum;
-            // errorName = 'Conflict';
-            return Observable.throw(errorObject);
-          } else if (
-            errorObject.hasOwnProperty("errors") &&
-            errorObject.errors.hasOwnProperty("xPCtrNum")
-          ) {
-            // errorMessage= errorObject.errors.xStructNum;
-            // errorName = 'Conflict';
-            return Observable.throw(errorObject);
-          } else if (
-            errorObject.hasOwnProperty("errors") &&
-            errorObject.errors.hasOwnProperty("xMerAcctNum")
-          ) {
-            // errorMessage= errorObject.errors.xStructNum;
-            // errorName = 'Conflict';
-            return Observable.throw(errorObject);
-          } else if (
-            errorObject.hasOwnProperty("errors") &&
-            errorObject.errors.hasOwnProperty("xTerminalNum")
-          ) {
-            // errorMessage= errorObject.errors.xStructNum;
-            // errorName = 'Conflict';
-            return Observable.throw(errorObject);
-          } else if (
-            errorObject.hasOwnProperty("errors") &&
-            errorObject.errors.hasOwnProperty("xPeriphNum")
-          ) {
-            // errorMessage= errorObject.errors.xStructNum;
-            // errorName = 'Conflict';
-            return Observable.throw(errorObject);
-          } else if (
-            errorObject.hasOwnProperty("errors") &&
-            errorObject.errors.hasOwnProperty("xEmployeeNum")
-          ) {
-            // errorMessage= errorObject.errors.xStructNum;
-            // errorName = 'Conflict';
-            return Observable.throw(errorObject);
-          } else if (
-            errorObject.hasOwnProperty("errors") &&
-            errorObject.errors.hasOwnProperty("xCustomerNum")
-          ) {
-            // errorMessage= errorObject.errors.xStructNum;
-            // errorName = 'Conflict';
-            return Observable.throw(errorObject);
-          } else if (
-            errorObject.hasOwnProperty("errors") &&
-            errorObject.errors.hasOwnProperty("xRepNum")
-          ) {
-            // errorMessage= errorObject.errors.xStructNum;
-            // errorName = 'Conflict';
-            return Observable.throw(errorObject);
-          } else {
-            // errorMessage = MESSAGES[409].message;
-            // errorName = errorObject.name
-            //   ? errorObject.name
-            //   : MESSAGES[409].name;
-          }
-          // return Observable.throw(errorObject);
-        }
-
-        if (
-          errorObject.message &&
-          errorObject.message.includes("Cast to ObjectId failed")
-        ) {
-          //   errorMessage = MESSAGES["noRecord"].message;
-          //   errorName = MESSAGES["noRecord"].name;
-        }
-
-        if (
-          errorObject.name === "BadRequest" ||
-          errorObject.message === "Invalid data"
-        ) {
-          if (
-            errorObject.message &&
-            errorObject.message.includes("xpcSafes validation failed")
-          ) {
-            // errorMessage = MESSAGES["InvalidSafesData"].message;
-            // errorName = MESSAGES["InvalidSafesData"].name;
-          } else if (
-            errorObject.message &&
-            errorObject.message.includes("Missing credentials")
-          ) {
-            // errorMessage=MESSAGES["MissingCredentials"].message;
-            // errorName=MESSAGES["MissingCredentials"].name;
-            return Observable.throw(errorObject);
-          } else {
-            if (
-              errorObject.hasOwnProperty("errors") &&
-              Object.keys(errorObject.errors).length > 0
-            ) {
-              //   errorMessage = MESSAGES["invalidData"].message;
-              //   errorName = MESSAGES["invalidData"].name;
-            } else {
-              return Observable.throw(errorObject);
-            }
-          }
-        }
-
-        if (
-          errorObject.name === "NotAuthenticated" &&
-          errorObject.message === "Error"
-        ) {
-          // errorMessage = MESSAGES["notAuthenticated"].message;
-          // errorName = MESSAGES["notAuthenticated"].name;
-          return Observable.throw(errorObject);
-        }
+        this.notificationService.error(
+          errorMessage ? errorMessage : errorObject.message,
+          errorName ? errorName : errorObject.name
+        );
       }
-
-      //   this.notificationService.error(
-      //     errorMessage ? errorMessage : errorObject.message,
-      //     errorName ? errorName : errorObject.name
-      //   );
       return Observable.throw(errorObject);
     } catch (err) {
       console.log("Ye aya hai catch me", err);
-      //   this.notificationService.error(
-      //     MESSAGES["general"].message,
-      //     MESSAGES["general"].name
-      //   );
+      this.notificationService.error("General error", "Error");
       return Observable.throw({});
     }
   }

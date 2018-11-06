@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from "@angular/core";
 import io from "socket.io-client";
 import { HttpService } from "../../../shared/services/http-service";
 import * as FileSaver from "file-saver";
+import { NotificationService } from "../../services/notification-service";
+import { IfObservable } from "rxjs/observable/IfObservable";
 
 @Component({
   selector: "app-grid-cmp",
@@ -9,7 +11,8 @@ import * as FileSaver from "file-saver";
   styleUrls: ["./grid-cmp.component.css"]
 })
 export class GridCmpComponent implements OnInit {
-  private url = "http://13.232.62.50:3030";
+  // private url = "http://13.232.62.50:3030";
+  private url = "http://localhost:3030";
   private socket;
 
   @Input()
@@ -19,19 +22,19 @@ export class GridCmpComponent implements OnInit {
   @Input()
   actionList: any[];
 
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private httpService: HttpService,
+    private notificationService: NotificationService
+  ) {}
 
   ngOnInit() {
     this.socket = io.connect(this.url);
     this.socket.on("OrderPlaced", data => {
       console.log("OrderPlaced: " + JSON.stringify(data));
-      // this.todos.push(data.todo);
       this.dataList.push(data);
     });
     this.socket.on("OrderCompleted", data => {
       console.log("OrderCompleted: ", JSON.parse(JSON.stringify(data)));
-      // this.todos.push(data.todo);
-      // this.dataList.push(data);
       this.fetchCompleteOrderList();
     });
     if (this.dataList.length === 0) {
@@ -43,7 +46,12 @@ export class GridCmpComponent implements OnInit {
     this.httpService.getAll("fetchOrders", {}).subscribe(
       res => {
         console.log("fetchOrders res", res);
-        this.dataList = JSON.parse(JSON.stringify(res));
+        if (res && res.hasOwnProperty("success") && !res.success) {
+          this.notificationService.error("Unable to fetch order list", "Error");
+          this.dataList = [];
+        } else {
+          this.dataList = JSON.parse(JSON.stringify(res));
+        }
       },
       err => {
         console.log("fetchOrders err", err);
@@ -57,6 +65,9 @@ export class GridCmpComponent implements OnInit {
     this.httpService.store("completeOrder", orderData).subscribe(
       orderCompleteRes => {
         console.log("orderCompleteRes", orderCompleteRes);
+        if(orderCompleteRes && orderCompleteRes.hasOwnProperty('success') && !orderCompleteRes.success){
+          this.notificationService.error("Unable to complete action", "Error");
+        }
         // this.fetchCompleteOrderList();
       },
       orderCompleteErr => {
