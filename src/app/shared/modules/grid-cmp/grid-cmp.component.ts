@@ -50,7 +50,17 @@ export class GridCmpComponent implements OnInit {
           this.notificationService.error("Unable to fetch order list", "Error");
           this.dataList = [];
         } else {
-          this.dataList = JSON.parse(JSON.stringify(res));
+          let doneList = JSON.parse(JSON.stringify(res)).filter(
+            singleRes =>
+              singleRes.status === true || singleRes.status === "true"
+          );
+          let pendingList = JSON.parse(JSON.stringify(res)).filter(
+            singleRes =>
+              !(singleRes.status === true || singleRes.status === "true")
+          );
+          this.dataList = doneList
+            .concat(pendingList)
+            .map(singleRes => singleRes);
         }
       },
       err => {
