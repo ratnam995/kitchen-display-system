@@ -5,11 +5,6 @@ import { KitchenDashboardComponent } from "./kitchen-dashboard.component";
 const routes: Routes = [
   {
     path: "",
-    pathMatch: "full",
-    redirectTo: "dashboard"
-  },
-  {
-    path: "",
     component: KitchenDashboardComponent
   }
 ];
